@@ -33,6 +33,7 @@ end
 
 local auctionatorRegistered = false
 local origAddMessage = nil
+local debugMode = false
 
 local function onFullScanConfirmed()
     local ok, err = pcall(function()
@@ -63,6 +64,9 @@ local function hookChat()
         origAddMessage(self, msg, ...)
         if msg then
             local plain = stripColorCodes(msg)
+            if debugMode then
+                origAddMessage(self, "|cffffff00[GAH DEBUG]|r " .. plain)
+            end
             if plain:find("Auctionator") and plain:find("Finished processing") then
                 onFullScanConfirmed()
             end
@@ -108,10 +112,17 @@ frame:SetScript("OnEvent", function(self, event, ...)
 end)
 
 SLASH_GOBLINASSISTANT1 = "/gah"
-SlashCmdList["GOBLINASSISTANT"] = function()
-    if db and db.lastScanRealm then
+SlashCmdList["GOBLINASSISTANT"] = function(msg)
+    local cmd = msg and msg:lower():match("^%s*(%S+)") or ""
+    if cmd == "debug" then
+        debugMode = not debugMode
+        print("|cff00ff00[Goblin Assistant]|r Debug mode: " .. (debugMode and "|cff00ff00ON|r (open AH to start logging)" or "|cffff4444OFF|r"))
+    elseif cmd == "test" then
+        print("|cff00ff00[Goblin Assistant]|r Testing popup...")
+        onFullScanConfirmed()
+    elseif db and db.lastScanRealm then
         print("|cff00ff00[Goblin Assistant]|r Last scan: " .. db.lastScanRealm .. " | " .. (db.lastScanAHType or "?") .. " AH | " .. (db.lastScanFaction or "?"))
     else
-        print("|cff00ff00[Goblin Assistant]|r No scan captured yet this session.")
+        print("|cff00ff00[Goblin Assistant]|r No scan captured yet this session. Commands: /gah debug, /gah test")
     end
 end
