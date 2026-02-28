@@ -1,0 +1,8 @@
+## Interface: 20505
+## Title: Goblin Assistant Helper
+## Notes: Hooks Auctionator full scan complete and prompts reload for data submission.
+## Version: 1.0.0
+## SavedVariables: GoblinAssistantHelperDB
+## OptionalDeps: Auctionator
+
+GoblinAssistantHelper.lua
