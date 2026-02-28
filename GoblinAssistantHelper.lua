@@ -118,8 +118,8 @@ SlashCmdList["GOBLINASSISTANT"] = function(msg)
         debugMode = not debugMode
         print("|cff00ff00[Goblin Assistant]|r Debug mode: " .. (debugMode and "|cff00ff00ON|r (open AH to start logging)" or "|cffff4444OFF|r"))
     elseif cmd == "test" then
-        print("|cff00ff00[Goblin Assistant]|r Testing popup...")
-        onFullScanConfirmed()
+        print("|cff00ff00[Goblin Assistant]|r db=" .. tostring(db) .. " Testing popup directly...")
+        StaticPopup_Show("GOBLINASSISTANT_RELOAD", "Test")
     elseif db and db.lastScanRealm then
         print("|cff00ff00[Goblin Assistant]|r Last scan: " .. db.lastScanRealm .. " | " .. (db.lastScanAHType or "?") .. " AH | " .. (db.lastScanFaction or "?"))
     else
