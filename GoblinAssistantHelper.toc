@@ -1,4 +1,4 @@
-## Interface: 20505
+## Interface: 120001, 120000, 50503, 38000, 20505, 11508
 ## Title: Goblin Assistant Helper
 ## Notes: Hooks Auctionator full scan complete and prompts reload for data submission.
 ## Version: 1.0.0

@@ -96,7 +96,7 @@ frame:SetScript("OnEvent", function(self, event, ...)
         if name == ADDON_NAME then
             GoblinAssistantHelperDB = GoblinAssistantHelperDB or {}
             db = GoblinAssistantHelperDB
-            -- Attempt now; works if Auctionator loaded first via OptionalDeps.
+            print("|cff00ff00[Goblin Assistant]|r Loaded. Type /gah for commands.")
             registerWithAuctionator()
         elseif name == "Auctionator" then
             -- Fallback: Auctionator finished loading after us.
