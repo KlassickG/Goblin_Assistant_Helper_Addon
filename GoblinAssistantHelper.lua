@@ -33,7 +33,6 @@ end
 
 local auctionatorRegistered = false
 local origAddMessage = nil
-local debugMode = false
 
 local function onFullScanConfirmed()
     local ok, err = pcall(function()
@@ -64,9 +63,6 @@ local function hookChat()
         origAddMessage(self, msg, ...)
         if msg then
             local plain = stripColorCodes(msg)
-            if debugMode then
-                origAddMessage(self, "|cffffff00[GAH DEBUG]|r " .. plain)
-            end
             if plain:find("Auctionator") and plain:find("Finished processing") then
                 onFullScanConfirmed()
             end
@@ -96,7 +92,7 @@ frame:SetScript("OnEvent", function(self, event, ...)
         if name == ADDON_NAME then
             GoblinAssistantHelperDB = GoblinAssistantHelperDB or {}
             db = GoblinAssistantHelperDB
-            print("|cff00ff00[Goblin Assistant]|r Loaded. Type /gah for commands.")
+            print("|cff00ff00[Goblin Assistant]|r Active.")
             registerWithAuctionator()
         elseif name == "Auctionator" then
             -- Fallback: Auctionator finished loading after us.
@@ -112,17 +108,10 @@ frame:SetScript("OnEvent", function(self, event, ...)
 end)
 
 SLASH_GOBLINASSISTANT1 = "/gah"
-SlashCmdList["GOBLINASSISTANT"] = function(msg)
-    local cmd = msg and msg:lower():match("^%s*(%S+)") or ""
-    if cmd == "debug" then
-        debugMode = not debugMode
-        print("|cff00ff00[Goblin Assistant]|r Debug mode: " .. (debugMode and "|cff00ff00ON|r (open AH to start logging)" or "|cffff4444OFF|r"))
-    elseif cmd == "test" then
-        print("|cff00ff00[Goblin Assistant]|r db=" .. tostring(db) .. " Testing popup directly...")
-        StaticPopup_Show("GOBLINASSISTANT_RELOAD", "Test")
-    elseif db and db.lastScanRealm then
+SlashCmdList["GOBLINASSISTANT"] = function()
+    if db and db.lastScanRealm then
         print("|cff00ff00[Goblin Assistant]|r Last scan: " .. db.lastScanRealm .. " | " .. (db.lastScanAHType or "?") .. " AH | " .. (db.lastScanFaction or "?"))
     else
-        print("|cff00ff00[Goblin Assistant]|r No scan captured yet this session. Commands: /gah debug, /gah test")
+        print("|cff00ff00[Goblin Assistant]|r No scan captured yet this session.")
     end
 end
