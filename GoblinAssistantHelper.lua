@@ -54,6 +54,7 @@ end
 
 local function hookChat()
     if origAddMessage then return end  -- already hooked
+    if auctionatorRegistered then return end  -- API registered; no need for chat hook fallback
     origAddMessage = DEFAULT_CHAT_FRAME.AddMessage
     DEFAULT_CHAT_FRAME.AddMessage = function(self, msg, ...)
         origAddMessage(self, msg, ...)
@@ -76,6 +77,9 @@ local function registerWithAuctionator()
         print("|cffff4444[Goblin Assistant]|r Auctionator API not found - scan detection unavailable.")
         return
     end
+    Auctionator.API.v1.RegisterForDBUpdate(ADDON_NAME, function()
+        onFullScanConfirmed()
+    end)
     auctionatorRegistered = true
     print("|cff00ff00[Goblin Assistant]|r Registered with Auctionator.")
 end
