@@ -52,14 +52,20 @@ local function onFullScanConfirmed()
     end
 end
 
+local function stripColorCodes(msg)
+    return msg:gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", "")
+end
+
 local function hookChat()
     if origAddMessage then return end  -- already hooked
-    if auctionatorRegistered then return end  -- API registered; no need for chat hook fallback
     origAddMessage = DEFAULT_CHAT_FRAME.AddMessage
     DEFAULT_CHAT_FRAME.AddMessage = function(self, msg, ...)
         origAddMessage(self, msg, ...)
-        if msg and msg:find("Auctionator: Finished processing") then
-            onFullScanConfirmed()
+        if msg then
+            local plain = stripColorCodes(msg)
+            if plain:find("Auctionator") and plain:find("Finished processing") then
+                onFullScanConfirmed()
+            end
         end
     end
 end
@@ -72,16 +78,8 @@ local function unhookChat()
 end
 
 local function registerWithAuctionator()
-    if auctionatorRegistered then return end
-    if not (Auctionator and Auctionator.API and Auctionator.API.v1 and Auctionator.API.v1.RegisterForDBUpdate) then
-        print("|cffff4444[Goblin Assistant]|r Auctionator API not found - scan detection unavailable.")
-        return
-    end
-    Auctionator.API.v1.RegisterForDBUpdate(ADDON_NAME, function()
-        onFullScanConfirmed()
-    end)
-    auctionatorRegistered = true
-    print("|cff00ff00[Goblin Assistant]|r Registered with Auctionator.")
+    -- intentionally empty: full scan detection is done via chat hook only,
+    -- because RegisterForDBUpdate fires for individual searches too.
 end
 
 frame = CreateFrame("Frame", ADDON_NAME .. "Frame")
